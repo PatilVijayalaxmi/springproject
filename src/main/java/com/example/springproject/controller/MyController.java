@@ -2,6 +2,7 @@ package com.example.springproject.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -23,6 +24,7 @@ import com.example.springproject.dto.StudentDetails;
 import com.example.springproject.helper.HelperForSendingMail;
 import com.example.springproject.repository.MyUserRepository;
 import com.example.springproject.repository.StudentRepository;
+
 
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
@@ -41,6 +43,7 @@ public class MyController {
 
     @Autowired
     HelperForSendingMail helperForSendingMail;
+
 
     @GetMapping("/")
     public String loadHome() {
@@ -155,9 +158,18 @@ public class MyController {
 
     // ------------------------------------------------
     @GetMapping("/fetch")
-    public String Fetch(HttpSession httpSession, ModelMap modelMap) {
+    public String FetchAll(HttpSession httpSession, ModelMap modelMap) {
         if (httpSession.getAttribute("user") != null) {
-            return "fetch.html";
+            List<StudentDetails> list=studentRepository.findAll();
+            if(list.isEmpty()){
+                modelMap.put("failure","not data found");
+                return "home.html";
+            }
+            else{
+                modelMap.put("list",list);
+                return "fetch.html";
+            }
+           
         } else {
             modelMap.put("failure", "Invalid Session");
             return "login.html";
@@ -166,8 +178,10 @@ public class MyController {
 
     // ----------------------------------------
     @GetMapping("/update")
-    public String update(HttpSession httpSession, ModelMap modelMap) {
+    public String update(HttpSession httpSession, ModelMap modelMap,@RequestParam int id) {
         if (httpSession.getAttribute("user") != null) {
+            StudentDetails studentDetails=studentRepository.findById(id).orElseThrow();
+            modelMap.put("studentdetails",studentDetails);
             return "update.html";
         } else {
             modelMap.put("failure", "Invalid Session");
@@ -179,9 +193,11 @@ public class MyController {
     // ---------------------------------------------
 
     @GetMapping("/delete")
-    public String Delete(HttpSession httpSession, ModelMap modelMap) {
+    public String Delete(HttpSession httpSession, ModelMap modelMap,@RequestParam int id) {
         if (httpSession.getAttribute("user") != null) {
-            return "delete.html";
+        studentRepository.deleteById(id);
+        modelMap.put("Success", "Record deleted successfully");
+            return FetchAll(httpSession, modelMap);
         } else {
             modelMap.put("failure", "Invalid Session");
             return "login.html";
@@ -232,7 +248,19 @@ public String addToCloudinary(MultipartFile img) {
 	}
 
 //-----------------------------------------------
-
+@PostMapping("/update")
+public String update(@ModelAttribute StudentDetails studentDetails,HttpSession httpSession, ModelMap modelMap, @RequestParam MultipartFile img,@RequestParam int id)
+{
+    if (httpSession.getAttribute("user") != null) {
+        studentDetails.setPicture(addToCloudinary(img));
+        studentRepository.save(studentDetails);
+        modelMap.put("Success","Record Save successfully");
+        return "fetch.html";
+    } else {
+        modelMap.put("failure", "Invalid Session");
+        return "login.html";
+    }
+}
 }
 
 

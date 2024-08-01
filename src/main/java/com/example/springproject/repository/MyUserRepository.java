@@ -12,4 +12,6 @@ public interface MyUserRepository extends JpaRepository<MyUSer,Integer> {
 
     MyUSer findByEmail(String email);
 
+
+
 }
