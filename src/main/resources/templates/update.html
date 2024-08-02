@@ -7,21 +7,23 @@
 </head>
 <body>
     <form action="/update" method="post" enctype="multipart/form-data">
-<input type="hidden" name="id" th:value="${studentdetails.id}">
-        Name:<input type="text" name="name" th:value="${studentdetails.name}"><br> <br>
-        Standard:<input type="text" name="standard" th:value="${studentdetails.standard}"><br> <br>
-        Date of Birth: <input type="date" name="dob" th:value="${studentdetails.dob}"><br> <br>
-        Mobilenumber:<input type="text" name="mobilenumber" th:value="${studentdetails.mobilenumber}"><br><br>
+<input type="hidden" name="id" th:value="${studentDetails.id}">
+        Name:<input type="text" name="name" th:value="${studentDetails.name}"><br> <br>
+        Standard:<input type="text" name="standard" th:value="${studentDetails.standard}"><br> <br>
+        Date of Birth: <input type="date" name="dob" th:value="${studentDetails.dob}"><br> <br>
+        Mobilenumber:<input type="text" name="mobilenumber" th:value="${studentDetails.mobilenumber}"><br><br>
         marks:
         <br><br>
-        Subject1:<input type="number" name="subject1" th:value="${studentdetails.subject1}"><br><br>
-        Subject2:<input type="number" name="subject2" th:value="${studentdetails.subject2}"><br><br>
-        subject3:<input type="number" name="subject3" th:value="${studentdetails.subject3}"><br><br>
-        subject4:<input type="number" name="subject4" th:value="${studentdetails.subject4}"><br><br>
-        subject5:<input type="number" name="subject5" th:value="${studentdetails.subject5}"><br><br>
-        subject6:<input type="number" name="subject6" th:value="${studentdetails.subject6}"><br><br>
-        Img:<input type="file" name="img" th:value="${studentdetails.img}"> <br> <br>
-        <button>Edit</button>
+        Subject1:<input type="number" name="subject1" th:value="${studentDetails.subject1}"><br><br>
+        Subject2:<input type="number" name="subject2" th:value="${studentDetails.subject2}"><br><br>
+        subject3:<input type="number" name="subject3" th:value="${studentDetails.subject3}"><br><br>
+        subject4:<input type="number" name="subject4" th:value="${studentDetails.subject4}"><br><br>
+        subject5:<input type="number" name="subject5" th:value="${studentDetails.subject5}"><br><br>
+        subject6:<input type="number" name="subject6" th:value="${studentDetails.subject6}"><br><br>
+        picture:<input type="file" name="img"> 
+        <img th:src="${studentDetails.picture}" alt="alt" height="50px" width="50px" />
+        <br> <br>
+        <button type="submit">Update</button>
    
        </form>
 </body>

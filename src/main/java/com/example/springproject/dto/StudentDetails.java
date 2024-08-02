@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
-@Data
+ @Data
 @Entity
 public class StudentDetails {
      @Id

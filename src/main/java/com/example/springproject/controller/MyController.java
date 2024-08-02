@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -176,9 +177,11 @@ public class MyController {
         }
     }
 
+    
+
     // ----------------------------------------
-    @GetMapping("/update")
-    public String update(HttpSession httpSession, ModelMap modelMap,@RequestParam int id) {
+    @GetMapping("/update/{id}")
+    public String update(HttpSession httpSession, ModelMap modelMap,@PathVariable int id) {
         if (httpSession.getAttribute("user") != null) {
             StudentDetails studentDetails=studentRepository.findById(id).orElseThrow();
             modelMap.put("studentdetails",studentDetails);
@@ -249,18 +252,31 @@ public String addToCloudinary(MultipartFile img) {
 
 //-----------------------------------------------
 @PostMapping("/update")
-public String update(@ModelAttribute StudentDetails studentDetails,HttpSession httpSession, ModelMap modelMap, @RequestParam MultipartFile img,@RequestParam int id)
+public String update( StudentDetails studentDetails,HttpSession httpSession, ModelMap modelMap, @RequestParam MultipartFile img)
 {
     if (httpSession.getAttribute("user") != null) {
         studentDetails.setPicture(addToCloudinary(img));
         studentRepository.save(studentDetails);
-        modelMap.put("Success","Record Save successfully");
-        return "fetch.html";
+        modelMap.put("Success","Record Updated successfully");
+        return FetchAll(httpSession, modelMap);
     } else {
         modelMap.put("failure", "Invalid Session");
         return "login.html";
     }
 }
+
+//--------------------------------------------
+ @GetMapping("/edit/{id}")
+    public String edit(@PathVariable int id, HttpSession httpSession, ModelMap map){
+        if (httpSession.getAttribute("user") != null) {
+           StudentDetails studentDetails=studentRepository.findById(id).orElseThrow();
+           map.put("studentDetails", studentDetails);
+           return "update.html";
+        } else {
+            map.put("failure", "Invalid session");
+            return "login.html";
+        }
+    }
 }
 
 
